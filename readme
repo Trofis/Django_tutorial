@@ -1,1 +1,24 @@
 This is my first django starting project for beginners 
+
+
+------------------------ NOTES ----------------------------
+
+--> DATABASE :
+
+    How to create and implement the database (sqlite) ?
+    1) When the model is done you can add the config in mysite/settings (ex : "polls.apps.PollsConfig")
+    2) Then you can run the following command : python3 manage.py makemigrations polls
+        - By running makemigrations, you’re telling Django that you’ve made some changes to your models (in this case, you’ve made new ones) and that you’d like the changes to be stored as a migration
+        - Migration = storing changes from our model (you can read it in "migrations" folder)
+    3) Next you can run the following command : python3 manage.py sqlmigrate <app> <migration_number>
+        - This command takes migrations and return them in SQL
+        - python3 manage.py check can help you if you meet any kind of problem
+    4) Finally run python3 manage.py migrate which takes all migrations in stand by and executes them
+
+
+    python3 manage.py shell : gives you the possibility to interact with the free Django API (model, database, ...)
+        - x = object(xx=.., ...) : initialize object
+        - x.save() : save the object in the database
+        - x.xx = yy : change value 
+        - X.objects.all() = displays all the Model's objects 
+    
