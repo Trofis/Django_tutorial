@@ -2,29 +2,28 @@ from multiprocessing import context
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.views import generic
 #from django.http import Http404
 
 from .models import Choice, Question
 
-# Create your views here.
-def index(request):
-    latest_question_list = Question.objects.order_by('-pub_date')[:5]
-    context = {
-        'latest_question_list' : latest_question_list,
-    }
-    return render(request, 'polls/index.html', context)
+class IndexView(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'latest_question_list'
 
-def details(request, question_id):
-    #try:
-    #    question = Question.objects.get(pk=question_id)
-    #except:
-    #    raise Http404("Question does not exist")
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/details.html', {"question": question})
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
 
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/results.html', {'question': question})
+
+class DetailsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/details.html'
+
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
@@ -32,7 +31,7 @@ def vote(request, question_id):
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
         # Redisplay the question voting form.
-        return render(request, 'polls/detail.html', {
+        return render(request, 'polls/details.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
         })
